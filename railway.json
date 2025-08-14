@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "build": {
+    "command": "cd backend && pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate"
+  },
+  "deploy": {
+    "startCommand": "cd backend && gunicorn backend.wsgi:application --bind 0.0.0.0:$PORT",
+    "healthcheckPath": "/api/"
+  }
+}

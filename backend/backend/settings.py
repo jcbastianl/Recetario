@@ -29,7 +29,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'dev-insecure-change-me')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'False').lower() in ('1','true','yes','on')
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.up.railway.app', '.vercel.app', '.herokuapp.com']
 
 
 # Application definition
@@ -168,3 +168,72 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# =============================================================================
+# PRODUCTION CONFIGURATION
+# =============================================================================
+import dj_database_url
+
+# Railway/Vercel/Production Environment Detection
+IS_PRODUCTION = any([
+    'RAILWAY_ENVIRONMENT' in os.environ,
+    'VERCEL' in os.environ,
+    'HEROKU' in os.environ,
+    os.getenv('DJANGO_ENV') == 'production'
+])
+
+if IS_PRODUCTION:
+    # Security settings for production
+    DEBUG = False
+    ALLOWED_HOSTS = ['*']  # Railway/Vercel handle the domain validation
+    
+    # Database configuration for production (PostgreSQL)
+    if 'DATABASE_URL' in os.environ:
+        DATABASES = {
+            'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
+        }
+    
+    # Static files configuration for production
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    STATIC_URL = '/static/'
+    
+    # WhiteNoise configuration for serving static files
+    MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    
+    # CORS configuration for production
+    CORS_ALLOWED_ORIGINS = [
+        "https://recetario-frontend.vercel.app",
+        "https://recetario-app.vercel.app",
+        "https://tu-frontend.vercel.app",  # Cambiar por tu URL real
+    ]
+    
+    CORS_ALLOW_CREDENTIALS = True
+    
+    # Security settings
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    X_FRAME_OPTIONS = 'DENY'
+    
+    # Trust Railway/Vercel proxy headers
+    USE_TZ = True
+    
+    # Logging configuration for production
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'handlers': {
+            'console': {
+                'class': 'logging.StreamHandler',
+            },
+        },
+        'root': {
+            'handlers': ['console'],
+        },
+        'loggers': {
+            'django': {
+                'handlers': ['console'],
+                'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+            },
+        },
+    }
