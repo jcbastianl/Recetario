@@ -24,10 +24,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-$-fcb6al9g^8as-*1mgu8x!m972c*!71s@zjzvi!-h!akv%i@u'
+SECRET_KEY = os.getenv('SECRET_KEY', 'dev-insecure-change-me')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG')
+DEBUG = os.getenv('DEBUG', 'False').lower() in ('1','true','yes','on')
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
@@ -95,21 +95,31 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 
 # Database
+# Primary: MySQL/MariaDB (requires server up). Fallback: SQLite when USE_SQLITE=1
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-#apt-get install python-dev default-libmysqlclient-dev 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('DATABASE_BD'),
-        'USER':os.getenv('DATABASE_USER'),
-        'PASSWORD':os.getenv('DATABASE_PASSWORD'),
-        'HOST':os.getenv('DATABASE_SERVER'),
-        'PORT':os.getenv('DATABASE_PORT'),
-        'OPTIONS': {
-            'autocommit': True
+USE_SQLITE = os.getenv('USE_SQLITE', '0').lower() in ('1','true','yes','on')
+
+if USE_SQLITE:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': os.getenv('DATABASE_BD'),
+            'USER': os.getenv('DATABASE_USER'),
+            'PASSWORD': os.getenv('DATABASE_PASSWORD'),
+            'HOST': os.getenv('DATABASE_SERVER'),
+            'PORT': os.getenv('DATABASE_PORT'),
+            'OPTIONS': {
+                'autocommit': True
+            }
+        }
+    }
 
 
 # Password validation

@@ -4,7 +4,7 @@ import Footer from '@/components/Footer.vue';
 import { Form, Field, ErrorMessage } from 'vee-validate';
 import { ref } from 'vue';
 import { registroComposable } from '@/composables/useSeguridadComposable';
-
+import * as yup from 'yup';
 
 let boton = ref('block');
 let preloader = ref('none');
@@ -15,7 +15,12 @@ let password = ref('');
 
 const {sendData} = registroComposable();
 
-
+// Define validation schema
+const registroSchema = yup.object({
+  nombre: yup.string().required('El nombre es obligatorio'),
+  correo: yup.string().email('Debe ser un email válido').required('El correo es obligatorio'),
+  password: yup.string().min(6, 'La contraseña debe tener al menos 6 caracteres').required('La contraseña es obligatoria')
+});
 
 let enviar = () => {
      boton.value='none';

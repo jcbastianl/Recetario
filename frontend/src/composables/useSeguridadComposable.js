@@ -5,19 +5,18 @@ import axios from 'axios';
 export function registroComposable(body) {
 
   let sendData = async (body) => {
-    /*try {
-
-    } catch (error) {
-      alert("Ocurrió un error inesperado");
-      window.location=location.href;
-    }*/
     axios.post(`${import.meta.env.VITE_API_URL}seguridad/registro`, body, { headers: { 'content-type': "application/json" } })
       .then((response) => {
         alert("Te haz registrado exitosamente!!\nTe hemos enviado un mail al correo que nos indicaste para activar tu cuenta.");
         window.location = location.href;
       })
       .catch((err) => {
-        alert("Ocurrió un error inesperado "+err);
+        // Mejor manejo de errores del backend
+        if (err.response && err.response.data && err.response.data.mensaje) {
+          alert("Error: " + err.response.data.mensaje);
+        } else {
+          alert("Ocurrió un error inesperado: " + err.message);
+        }
         window.location = location.href;
       });
   };

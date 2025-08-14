@@ -10,6 +10,7 @@ import Registro from '@/views/Registro.vue';
 import Login from '@/views/Login.vue';
 import Panel from '@/views/Panel.vue';
 import PanelEditar from '@/views/PanelEditar.vue';
+import Categorias from '@/views/Categorias.vue';
 import { useAuthStore } from '@/stores/authStore';
 
 
@@ -68,6 +69,14 @@ const router = createRouter({
       path:'/panel/editar/:id',
       component: PanelEditar,
       name:'panel_editar',
+     },
+     {
+      path:'/categorias',
+      component: Categorias,
+      name:'categorias',
+      meta: {
+        secure: true // This route requires authentication
+      }
      },
      {
       path:'/:pathMatch(.*)*',

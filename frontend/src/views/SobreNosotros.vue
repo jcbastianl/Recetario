@@ -28,16 +28,53 @@ import Footer from '@/components/Footer.vue';
 
       <div class="row">
           <div class="col-12">
-              <h6 class="sub-heading pb-5">Donec quis metus ac arcu luctus accumsan. Nunc in justo tincidunt, sodales nunc id, finibus nibh. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce nec ante vitae lacus aliquet vulputate. Donec scelerisque accumsan molestie. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae</h6>
+              <h6 class="sub-heading pb-5">Somos una comunidad apasionada de cocineros caseros, chefs profesionales y amantes de la gastronomía que creen que la cocina es el corazón de cada hogar. Fundado en 2023 por un grupo de amigos que compartían recetas familiares en una pequeña cocina, hemos crecido hasta convertirnos en la plataforma de recetas más querida de América Latina.</h6>
+          </div>
+      </div>
 
-              <p class="text-center">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum nec varius dui. Suspendisse potenti. Vestibulum ac pellentesque tortor. Aenean congue sed metus in iaculis. Cras a tortor enim. Phasellus posuere vestibulum ipsum, eget lobortis purus. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Proin malesuada et mauris ut lobortis. Sed eu iaculis sapien, eget luctus quam. Aenean hendrerit varius massa quis laoreet. Donec quis metus ac arcu luctus accumsan. Nunc in justo tincidunt, sodales nunc id, finibus nibh. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</p>
+      <div class="row">
+          <div class="col-12">
+              <h4 class="text-center mb-4">Nuestros Valores</h4>
+              
+              <div class="row">
+                <div class="col-md-4 text-center mb-4">
+                  <h5>🏠 Tradición Familiar</h5>
+                  <p>Honramos las recetas que han pasado de generación en generación, preservando sabores y memorias que definen nuestra identidad culinaria.</p>
+                </div>
+                
+                <div class="col-md-4 text-center mb-4">
+                  <h5>🌍 Diversidad Gastronómica</h5>
+                  <p>Celebramos la riqueza culinaria de todas las culturas, creando un espacio donde cada tradición tiene su lugar especial.</p>
+                </div>
+                
+                <div class="col-md-4 text-center mb-4">
+                  <h5>💡 Innovación Accesible</h5>
+                  <p>Combinamos técnicas tradicionales con herramientas modernas para hacer que cocinar sea más fácil y emocionante para todos.</p>
+                </div>
+              </div>
+              
+              <div class="row mt-4">
+                <div class="col-12 text-center">
+                  <h4>¿Por qué elegirnos?</h4>
+                  <p class="lead">
+                    Con más de <strong>10,000 recetas verificadas</strong>, <strong>50,000 cocineros activos</strong> y 
+                    <strong>1 millón de platos exitosos</strong> creados cada mes, somos la comunidad culinaria 
+                    de confianza donde la pasión por cocinar se encuentra con la innovación tecnológica.
+                  </p>
+                  
+                  <p class="text-center mt-4">
+                    <em>"En cada receta hay una historia, en cada plato hay amor, y en cada cocina hay un chef esperando a ser descubierto."</em><br>
+                    <small>- Equipo Recetario</small>
+                  </p>
+                </div>
+              </div>
           </div>
       </div>
 
 
       <div class="row">
           <div class="col-12">
-              <img class="mb-70" src="/img/bg-img/about.png" alt="" />
+              <img class="mb-70" src="/img/bg-img/about.png" alt="Equipo Recetario cocinando juntos" />
 
           </div>
       </div>

@@ -11,6 +11,7 @@ from jose import jwt
 from django.conf import settings
 from datetime import datetime, timedelta
 import time
+import threading
 
 
 from .models import *
@@ -35,7 +36,7 @@ class Clase1(APIView):
         
         
         token = uuid.uuid4()
-        url = f"{os.getenv("BASE_URL")}api/v1/seguridad/verificacion/{token}"
+        url = f"{os.getenv('BASE_URL')}api/v1/seguridad/verificacion/{token}"
         try:
             u=User.objects.create_user(username=request.data["correo"], password=request.data["password"], email=request.data["correo"], first_name=request.data["nombre"], last_name="", is_active=0)
             UsersMetadata.objects.create(token=token, user_id=u.id)
@@ -49,7 +50,17 @@ class Clase1(APIView):
             <br/>
             {url}
             """
-            utilidades.sendMail(html, "Verificación", request.data["correo"])
+                        # Ejecutar email en hilo separado
+            def send_email_async():
+                try:
+                    utilidades.sendMail(html, "Verificación", request.data["correo"])
+                except Exception as email_error:
+                    print(f"[WARNING] Error enviando email a {request.data['correo']}: {email_error}")
+            
+            # Ejecutar email en hilo separado
+            email_thread = threading.Thread(target=send_email_async)
+            email_thread.daemon = True
+            email_thread.start()
             
         except Exception as e:
             return JsonResponse({"estado":"error", "mensaje":"Ocurrió un error inesperado"}, status=HTTPStatus.BAD_REQUEST)

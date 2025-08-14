@@ -63,9 +63,11 @@ let store = useAuthStore();
                   <li><router-link to="/sobre-nosotros" title="Sobre nosotros">Sobre nosotros</router-link></li>
                   <li><router-link to="/recetas" title="Recetas">Recetas</router-link></li>
                   <li><router-link to="/contacto" title="Contacto">Contacto</router-link></li>
+                  <li v-if="store.authId!=null"><router-link to="/panel" title="Panel">Panel</router-link></li>
                   <li v-if="store.authId==null"><router-link to="/registro" title="Registro">Registro</router-link></li>
                   <li v-if="store.authId==null"><router-link to="/login" title="Login">Login</router-link></li>
-                  <li v-if="store.authId!=null"><router-link :to="{name:'panel'}" :title="'Hola ' + store.authNombre">{{ 'Hola ' + store.authNombre }}</router-link></li>
+                  <li v-if="store.authId!=null"><router-link to="/categorias" title="Gestionar Categorías">Categorías</router-link></li>
+                  <li v-if="store.authId!=null" class="user-greeting"><router-link :to="{name:'panel'}" :title="'Hola ' + store.authNombre">{{ 'Hola ' + store.authNombre }}</router-link></li>
                   <li v-if="store.authId!=null">
                     <router-link @click="store.cerrarSesion" to="#" title="Cerrar sesión">Cerrar sesión</router-link>
                   </li>
@@ -80,3 +82,16 @@ let store = useAuthStore();
     </div>
   </header>
 </template>
+
+<style scoped>
+.user-greeting {
+  margin-left: auto !important;
+}
+
+/* Para asegurar que funcione en dispositivos móviles también */
+@media (max-width: 991px) {
+  .user-greeting {
+    margin-left: 0 !important;
+  }
+}
+</style>

@@ -42,3 +42,8 @@ export const recetasSchema = yup.object(
         tiempo: yup.string().required("El campo tiempo es obligatorio"),
         descripcion: yup.string().required("El campo Descripción es obligatorio"),
     });
+
+export const categoriaSchema = yup.object(
+    {
+        nombre: yup.string().required("El campo nombre es obligatorio").min(2, "El nombre debe tener al menos 2 caracteres"),
+    });

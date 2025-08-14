@@ -112,41 +112,37 @@ class Clase1(APIView):
             foto = f"{datetime.datetime.now().timestamp()}{os.path.splitext(str(request.FILES['foto'].name))[1]}"
         except Exception as e:
             return JsonResponse({"estado": "error", "mensaje": "Error al procesar la imagen: " + str(e)}, status=HTTPStatus.BAD_REQUEST)
-        if request.FILES['foto'].content_type == 'image/jpeg' or request.FILES['foto'].content_type == 'image/png':
+        if request.FILES['foto'].content_type in ('image/jpeg','image/png'):
+            # Guardar archivo (una sola vez)
             try:
                 fs.save(f"recetas/{foto}", request.FILES['foto'])
-                fs.url(request.FILES['foto'])
-
             except Exception as e:
-                return JsonResponse({"estado": "error", "mensaje": "Error al procesar la imagen: " + str(e)}, status=HTTPStatus.BAD_REQUEST)
-        
-        if request.FILES['foto'].content_type == 'image/jpeg' or request.FILES['foto'].content_type == 'image/png':
+                return JsonResponse({"estado": "error", "mensaje": f"Error al procesar la imagen: {str(e)}"}, status=HTTPStatus.BAD_REQUEST)
+
+            # Decodificar token
             try:
-                fs.save(f"recetas/{foto}", request.FILES['foto'])
-                fs.url(request.FILES['foto'])
-            except Exception as e:
-                return JsonResponse({"estado": "error", "mensaje": "Error al procesar la imagen: " + str(e)}, status=HTTPStatus.BAD_REQUEST)
+                header = request.headers.get('Authorization','').split(' ')
+                if len(header) != 2:
+                    return JsonResponse({"estado": "error", "mensaje": "Token no provisto correctamente"}, status=HTTPStatus.UNAUTHORIZED)
+                resuelto = jwt.decode(header[1], settings.SECRET_KEY, algorithms=['HS512'])
+            except Exception:
+                return JsonResponse({"estado": "error", "mensaje": "Token inválido"}, status=HTTPStatus.UNAUTHORIZED)
 
-            header = request.headers.get('Authorization').split(' ')
-            resuelto = jwt.decode(header[1], settings.SECRET_KEY, algorithms=['HS512'])
-
+            # Crear receta
             try:
                 Receta.objects.create(
-                    nombre=request.data['nombre'], 
+                    nombre=request.data['nombre'],
                     tiempo=request.data.get('tiempo'),
-                    descripcion=request.data.get('descripcion'), 
+                    descripcion=request.data.get('descripcion'),
                     categoria_id=request.data.get('categoria_id'),
                     foto=foto,
                     user_id=resuelto['id'],
                 )
+                return JsonResponse({"estado": "ok", "mensaje": "Receta creada correctamente"}, status=HTTPStatus.CREATED)
             except Exception as e:
-                return JsonResponse({"message": "Receta created successfully"}, status=HTTPStatus.CREATED)
-            except Exception as e:
-                return JsonResponse({"estado": "error", "mensaje": f"Error al procesar la imagen o crear la receta: {str(e)}"}, status=HTTPStatus.BAD_REQUEST)
+                return JsonResponse({"estado": "error", "mensaje": f"Error al crear la receta: {str(e)}"}, status=HTTPStatus.BAD_REQUEST)
         else:
             return JsonResponse({"estado": "error", "mensaje": "El formato de imagen no es válido. Solo se acepta JPG o PNG"}, status=HTTPStatus.BAD_REQUEST)
-
-        return JsonResponse({"estado": "error", "mensaje": "La foto solo debe ser jpg o png"}, status=HTTPStatus.INTERNAL_SERVER_ERROR)
 
 
 
@@ -165,7 +161,7 @@ class Clase2(APIView):
                     "user_id": data.user_id,
                     "user": data.user.first_name if data.user else None,
                     "fecha": DateFormat(data.fecha).format('d/m/Y') if data.fecha else None,
-                    "foto": f"{os.getenv('BaseURL')}/uploads/recetas/{data.foto}" if data.foto else None
+                    "foto": f"{os.getenv('BASE_URL')}uploads/recetas/{data.foto}" if data.foto else None
                 }
             }, status=HTTPStatus.OK)
         except Receta.DoesNotExist:
