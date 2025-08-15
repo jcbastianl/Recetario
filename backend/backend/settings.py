@@ -236,4 +236,4 @@ if IS_PRODUCTION:
                 'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
             },
         },
-    }
+    }# Updated CORS
