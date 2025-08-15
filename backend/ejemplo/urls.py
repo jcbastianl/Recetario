@@ -2,7 +2,7 @@ from django.urls import path
 from .views import Class_Ejemplo, Class_EjemploParametros , Class_EjemploUpload
 
 urlpatterns = [
-    path('ejemplo', Class_Ejemplo.as_view()), #esto es para que se pueda acceder a la vista
-    path('ejemplo/<int:id>', Class_EjemploParametros.as_view()),
-    path('ejemplo-upload', Class_EjemploUpload.as_view()),
+    path('', Class_Ejemplo.as_view()),  # /api/v1/ejemplo/
+    path('<int:id>/', Class_EjemploParametros.as_view()),  # /api/v1/ejemplo/1/
+    path('upload/', Class_EjemploUpload.as_view()),  # /api/v1/ejemplo/upload/
 ]
