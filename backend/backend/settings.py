@@ -29,7 +29,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'dev-insecure-change-me')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'False').lower() in ('1','true','yes','on')
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.up.railway.app', '.vercel.app', '.herokuapp.com']
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -185,7 +185,7 @@ IS_PRODUCTION = any([
 if IS_PRODUCTION:
     # Security settings for production
     DEBUG = False
-    ALLOWED_HOSTS = ['*']  # Railway/Vercel handle the domain validation
+    ALLOWED_HOSTS = ["*"]  # Railway/Vercel handle the domain validation
     
     # Database configuration for production (PostgreSQL)
     if 'DATABASE_URL' in os.environ:
