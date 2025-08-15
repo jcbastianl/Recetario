@@ -22,11 +22,11 @@ COPY . .
 # Make manage.py executable
 RUN chmod +x manage.py
 
-# Collect static files (this might fail first time, that's ok)
-RUN python manage.py collectstatic --no-input || true
+# Create staticfiles directory
+RUN mkdir -p backend/staticfiles
 
 # Expose port
 EXPOSE 8000
 
 # Start command
-CMD ["sh", "-c", "python manage.py migrate --no-input && cd backend && python -m gunicorn backend.wsgi:application --host 0.0.0.0 --port $PORT"]
+CMD ["sh", "-c", "python manage.py migrate --no-input && python manage.py collectstatic --no-input && cd backend && python -m gunicorn backend.wsgi:application --host 0.0.0.0 --port $PORT"]
