@@ -242,3 +242,4 @@ if IS_PRODUCTION:
 # CORS middleware fix
 # Force CORS and PostgreSQL update
 # Database config fix for Render PostgreSQL
+# Back to MySQL configuration
