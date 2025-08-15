@@ -172,7 +172,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # =============================================================================
 # PRODUCTION CONFIGURATION
 # =============================================================================
-import dj_database_url
 
 # Railway/Vercel/Production Environment Detection
 IS_PRODUCTION = any([
@@ -187,11 +186,6 @@ if IS_PRODUCTION:
     DEBUG = False
     ALLOWED_HOSTS = ["*"]  # Railway/Vercel handle the domain validation
     
-    # Database configuration for production (PostgreSQL)
-    if 'DATABASE_URL' in os.environ:
-        DATABASES = {
-            'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
-        }
     
     # Static files configuration for production
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
