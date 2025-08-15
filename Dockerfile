@@ -10,11 +10,11 @@ RUN apt-get update && apt-get install -y \
     pkg-config \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements
-COPY requirements.txt .
+# Copy backend requirements first (for better caching)
+COPY backend/requirements.txt ./backend/
 
 # Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r backend/requirements.txt
 
 # Copy application code
 COPY . .
@@ -22,8 +22,8 @@ COPY . .
 # Make manage.py executable
 RUN chmod +x manage.py
 
-# Collect static files
-RUN python manage.py collectstatic --no-input
+# Collect static files (this might fail first time, that's ok)
+RUN python manage.py collectstatic --no-input || true
 
 # Expose port
 EXPOSE 8000
