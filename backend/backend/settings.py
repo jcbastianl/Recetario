@@ -239,3 +239,4 @@ if IS_PRODUCTION:
     }# Updated CORS
 
 # CORS updated for all Vercel domains
+# CORS middleware fix
