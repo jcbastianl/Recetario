@@ -243,3 +243,4 @@ if IS_PRODUCTION:
 # Force CORS and PostgreSQL update
 # Database config fix for Render PostgreSQL
 # Back to MySQL configuration
+# Railway configuration added
