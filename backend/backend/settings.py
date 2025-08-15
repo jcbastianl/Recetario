@@ -240,3 +240,4 @@ if IS_PRODUCTION:
 
 # CORS updated for all Vercel domains
 # CORS middleware fix
+# Force CORS and PostgreSQL update
