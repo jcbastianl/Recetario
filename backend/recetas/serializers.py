@@ -15,5 +15,6 @@ class RecetaSerializer(serializers.ModelSerializer):
         fields = ("id","nombre","slug","tiempo","descripcion","fecha","categoria","categoria_id","imagen","user_id","user")
 
     def get_imagen(self,obj):
-        return f"{os.getenv('BASE_URL')}/uploads/recetas/{obj.foto}" 
+        base_url = os.getenv('BASE_URL', '').rstrip('/')  # Eliminar slash final si existe
+        return f"{base_url}/uploads/recetas/{obj.foto}" if obj.foto else None 
     

@@ -74,6 +74,10 @@ urlpatterns = [
 
 # --- FIN DE LA CORRECCIÓN ---
 
-# Esta línea es para servir archivos de medios (imágenes) durante el desarrollo
+# Configuración para servir archivos de media
 if settings.DEBUG:
+    # Desarrollo: Django sirve los archivos directamente
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+else:
+    # Producción: También servir archivos de media para Railway
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
