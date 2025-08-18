@@ -4,15 +4,18 @@ import apiClient from '@/services/apiClient';
 export function recetasComposable()
 {
   let datos = ref([]);
-  let categorias = ref({data: []});
+  let categorias = ref([]);
   let error = ref(null);
 
   let getDatos= async () =>
     {
       try {
+        console.log('🔍 Obteniendo recetas...');
         const res = await apiClient.get('/recetas/');
+        console.log('🔍 Recetas recibidas:', res.data);
         datos.value = res.data;
       } catch (err) {
+        console.error('🔍 Error obteniendo recetas:', err);
         error.value = err;
       }
     };
@@ -20,9 +23,12 @@ export function recetasComposable()
   let getCategorias = async () =>
     {
       try {
+        console.log('🔍 Obteniendo categorías en composable...');
         const res = await apiClient.get('/categorias/');
+        console.log('🔍 Categorías recibidas en composable:', res.data);
         categorias.value = res.data;
       } catch (err) {
+        console.error('🔍 Error obteniendo categorías en composable:', err);
         error.value = err;
       }
     };

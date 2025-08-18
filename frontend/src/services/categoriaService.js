@@ -5,12 +5,15 @@ class CategoriaService {
     // Obtener todas las categorías
     async obtenerCategorias() {
         try {
-            const response = await apiClient.get('/categorias')
+            console.log('🔍 Obteniendo categorías...');
+            const response = await apiClient.get('/categorias/');
+            console.log('🔍 Respuesta categorías:', response.data);
             return {
                 success: true,
-                data: response.data.data
+                data: response.data.data || response.data
             }
         } catch (error) {
+            console.error('🔍 Error obteniendo categorías:', error);
             return {
                 success: false,
                 message: error.response?.data?.message || 'Error al obtener categorías',
@@ -22,10 +25,10 @@ class CategoriaService {
     // Obtener una categoría por ID
     async obtenerCategoria(id) {
         try {
-            const response = await apiClient.get(`/categorias/${id}`)
+            const response = await apiClient.get(`/categorias/${id}/`);
             return {
                 success: true,
-                data: response.data.data
+                data: response.data.data || response.data
             }
         } catch (error) {
             return {
@@ -39,13 +42,16 @@ class CategoriaService {
     // Crear nueva categoría
     async crearCategoria(datos) {
         try {
-            const response = await apiClient.post('/categorias', datos)
+            console.log('🔍 Creando categoría:', datos);
+            const response = await apiClient.post('/categorias/', datos);
+            console.log('🔍 Respuesta crear categoría:', response.data);
             return {
                 success: true,
                 message: 'Categoría creada exitosamente',
                 data: response.data
             }
         } catch (error) {
+            console.error('🔍 Error creando categoría:', error);
             return {
                 success: false,
                 message: error.response?.data?.mensaje || 'Error al crear la categoría',
@@ -57,7 +63,7 @@ class CategoriaService {
     // Actualizar categoría
     async actualizarCategoria(id, datos) {
         try {
-            const response = await apiClient.put(`/categorias/${id}`, datos)
+            const response = await apiClient.put(`/categorias/${id}/`, datos);
             return {
                 success: true,
                 message: 'Categoría actualizada exitosamente',
@@ -75,7 +81,7 @@ class CategoriaService {
     // Eliminar categoría
     async eliminarCategoria(id) {
         try {
-            const response = await apiClient.delete(`/categorias/${id}`)
+            const response = await apiClient.delete(`/categorias/${id}/`);
             return {
                 success: true,
                 message: 'Categoría eliminada exitosamente',

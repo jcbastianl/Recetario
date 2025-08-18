@@ -19,10 +19,14 @@ let categorias = ref([]);
 
 onMounted(async ()=>{
     try {
+        console.log('🔍 Cargando datos del panel...');
         const respuesta = await apiClient.get(`/recetas-helper/panel/${localStorage.getItem('recetas_flaites_id')}/`);
+        console.log('🔍 Datos del panel:', respuesta.data);
         datos.value = respuesta.data;
 
+        console.log('🔍 Cargando categorías en panel...');
         const respuesta2 = await apiClient.get('/categorias/');
+        console.log('🔍 Categorías recibidas en panel:', respuesta2.data);
         categorias.value = respuesta2.data;
     } catch (error) {
         console.error('Error al cargar datos:', error);
@@ -214,7 +218,7 @@ const eliminar=(id)=>
                             <ErrorMessage name="categoria_id" class="text text-danger" />
                             <Field as="select" name="categoria_id" v-model="categoria_id" class="form-control" style="height: calc(2.25rem + 10px);">
                                 <option value="0">Selecciones.....</option>
-                                <option v-for="(categoria, i) in categorias.data" :key="i" :value="categoria.id">{{categoria.nombre}}</option>
+                                <option v-for="(categoria, i) in categorias" :key="i" :value="categoria.id">{{categoria.nombre}}</option>
                             </Field>
                         </div>
 

@@ -53,7 +53,7 @@ let enviar=()=>
                             <div class="col-12 col-lg-4">
                                 <Field as="select" v-model="categoria_id" class="form-control" name="categoria_id">
                                     <option value="0">Seleccione.....</option>
-                                    <option v-for="(categoria, i) in categorias.data" :key="i" :value="categoria.id">{{ categoria.nombre }}</option>
+                                    <option v-for="(categoria, i) in categorias" :key="i" :value="categoria.id">{{ categoria.nombre }}</option>
                                 </Field>
                             </div>
 
