@@ -61,6 +61,12 @@ let preloader  = ref('none');
 
 let enviar=()=>
 {
+    console.log('🔍 Datos antes de enviar:');
+    console.log('🔍 categoria_id:', categoria_id.value, 'tipo:', typeof categoria_id.value);
+    console.log('🔍 nombre:', nombre.value);
+    console.log('🔍 tiempo:', tiempo.value);
+    console.log('🔍 descripcion:', descripcion.value);
+    
     boton.value="none";
     preloader.value="block";
     if(modal_titulo.value=="Crear")
@@ -75,12 +81,25 @@ let enviar=()=>
             return;
         }
 
+        // Validar categoría seleccionada
+        if(categoria_id.value === "0" || categoria_id.value === 0) {
+            alert("Por favor selecciona una categoría válida");
+            boton.value="block";
+            preloader.value="none";
+            return;
+        }
+
         let formData =new FormData();
         formData.append('foto', file);
         formData.append('categoria_id', categoria_id.value);
         formData.append('nombre', nombre.value);
         formData.append('tiempo', tiempo.value);
         formData.append('descripcion', descripcion.value);
+        
+        console.log('🔍 FormData a enviar:');
+        for (let [key, value] of formData.entries()) {
+            console.log('🔍', key, ':', value);
+        }
 
         apiClient.post('/recetas/', formData)
         .then((response)=>{
@@ -234,7 +253,6 @@ const eliminar=(id)=>
 
                         <div class="col-12 col-lg-12">
                             <ErrorMessage name="categoria_id" class="text text-danger" />
-                            <p style="font-size:12px; color:red;">Debug - Total categorías: {{ categorias.length }}, Datos: {{ JSON.stringify(categorias) }}</p>
                             <Field as="select" name="categoria_id" v-model="categoria_id" class="form-control" style="height: calc(2.25rem + 10px);">
                                 <option value="0">Selecciones.....</option>
                                 <option v-for="(categoria, i) in categorias" :key="i" :value="categoria.id">{{categoria.nombre}}</option>
