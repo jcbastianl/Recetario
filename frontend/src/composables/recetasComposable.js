@@ -10,7 +10,7 @@ export function recetasComposable()
   let getDatos= async () =>
     {
       try {
-        const res = await apiClient.get('/recetas');
+        const res = await apiClient.get('/recetas/');
         datos.value = res.data;
       } catch (err) {
         error.value = err;
@@ -20,7 +20,7 @@ export function recetasComposable()
   let getCategorias = async () =>
     {
       try {
-        const res = await apiClient.get('/categorias');
+        const res = await apiClient.get('/categorias/');
         categorias.value = res.data;
       } catch (err) {
         error.value = err;

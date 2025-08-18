@@ -35,8 +35,8 @@ class Clase1(APIView):
             return JsonResponse({"estado":"error", "mensaje":"El campo password es obligatorio"}, status=HTTPStatus.BAD_REQUEST)
         
         
-        if User.objects.filter(email=request.data["correo"]).exists():
-            return JsonResponse({"estado":"error", "mensaje":f"El correo {request.data['correo']} no está disponible"}, status=HTTPStatus.BAD_REQUEST)
+        if User.objects.filter(email=correo).exists():
+            return JsonResponse({"estado":"error", "mensaje":f"El correo {correo} no está disponible"}, status=HTTPStatus.BAD_REQUEST)
         
         
         token = uuid.uuid4()

@@ -33,7 +33,7 @@ let enviar=async ()=>
     formData.append('foto', file);
     formData.append('id', route.params.id);
     try {
-        const response = await apiClient.post('/recetas/editar/foto/', formData);
+        const response = await apiClient.post('/recetas-helper/editar/foto/', formData);
         alert("Se modificó el registro exitosamente");
         window.location=`/panel/editar/${route.params.id}`;
     } catch (err) {

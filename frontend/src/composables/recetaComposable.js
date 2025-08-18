@@ -11,7 +11,7 @@ export function recetaComposable(slug)
     let getDatos= async(slug)=>
     {
         try {
-            const res = await apiClient.get(`/recetas/slug/${slug}`);
+            const res = await apiClient.get(`/recetas-helper/slug/${slug}/`);
             dato.value = res.data;
         } catch (err) {
             if(err.response?.status === 404) {

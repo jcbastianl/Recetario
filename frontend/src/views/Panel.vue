@@ -19,10 +19,10 @@ let categorias = ref([]);
 
 onMounted(async ()=>{
     try {
-        const respuesta = await apiClient.get(`/recetas-panel/${localStorage.getItem('recetas_flaites_id')}`);
+        const respuesta = await apiClient.get(`/recetas-helper/panel/${localStorage.getItem('recetas_flaites_id')}/`);
         datos.value = respuesta.data;
 
-        const respuesta2 = await apiClient.get('/categorias');
+        const respuesta2 = await apiClient.get('/categorias/');
         categorias.value = respuesta2.data;
     } catch (error) {
         console.error('Error al cargar datos:', error);
