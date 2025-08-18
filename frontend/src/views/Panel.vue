@@ -27,7 +27,25 @@ onMounted(async ()=>{
         console.log('🔍 Cargando categorías en panel...');
         const respuesta2 = await apiClient.get('/categorias/');
         console.log('🔍 Categorías recibidas en panel:', respuesta2.data);
-        categorias.value = respuesta2.data;
+        console.log('🔍 Tipo de categorías:', typeof respuesta2.data);
+        console.log('🔍 Es array?:', Array.isArray(respuesta2.data));
+        console.log('🔍 Estructura categorías:', respuesta2.data);
+        
+        // Procesar categorías según la estructura del backend
+        if (respuesta2.data && respuesta2.data.data) {
+            // Si viene con estructura {data: [...]}
+            categorias.value = respuesta2.data.data;
+            console.log('🔍 Usando respuesta2.data.data:', respuesta2.data.data);
+        } else if (Array.isArray(respuesta2.data)) {
+            // Si viene directamente como array
+            categorias.value = respuesta2.data;
+            console.log('🔍 Usando respuesta2.data (array):', respuesta2.data);
+        } else {
+            console.error('🔍 Estructura de categorías no reconocida:', respuesta2.data);
+            categorias.value = [];
+        }
+        
+        console.log('🔍 Categorías finales asignadas:', categorias.value);
     } catch (error) {
         console.error('Error al cargar datos:', error);
     }
@@ -216,6 +234,7 @@ const eliminar=(id)=>
 
                         <div class="col-12 col-lg-12">
                             <ErrorMessage name="categoria_id" class="text text-danger" />
+                            <p style="font-size:12px; color:red;">Debug - Total categorías: {{ categorias.length }}, Datos: {{ JSON.stringify(categorias) }}</p>
                             <Field as="select" name="categoria_id" v-model="categoria_id" class="form-control" style="height: calc(2.25rem + 10px);">
                                 <option value="0">Selecciones.....</option>
                                 <option v-for="(categoria, i) in categorias" :key="i" :value="categoria.id">{{categoria.nombre}}</option>
