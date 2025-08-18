@@ -1,4 +1,5 @@
 import { readonly, ref } from "vue";
+import apiClient from '@/services/apiClient';
 
 
 export function recetaComposable(slug)
@@ -10,13 +11,12 @@ export function recetaComposable(slug)
     let getDatos= async(slug)=>
     {
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}recetas/slug/${slug}`, {headers:{'content-type':'application-json'}});
-            if(res.status==404)
-            {
+            const res = await apiClient.get(`/recetas/slug/${slug}`);
+            dato.value = res.data;
+        } catch (err) {
+            if(err.response?.status === 404) {
                 window.location="/error";
             }
-            dato.value=await res.json();
-        } catch (err) {
             error.value=err;
         }
     };

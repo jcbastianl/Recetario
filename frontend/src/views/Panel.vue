@@ -5,7 +5,7 @@ import { onMounted, ref } from 'vue';
 import {Form, Field, ErrorMessage} from 'vee-validate';
 
 import {recetasSchema} from '@/schemas/validacionesSchema';
-import axios from 'axios';
+import apiClient from '@/services/apiClient';
 
 //injectar fancybox en vue
 //npm install @fancyapps/ui@4.0.31
@@ -18,16 +18,15 @@ let datos = ref([]);
 let categorias = ref([]);
 
 onMounted(async ()=>{
-    let respuesta =  await fetch(`${import.meta.env.VITE_API_URL}recetas-panel/${localStorage.getItem('recetas_flaites_id')}`, {
-        headers:{'content-type':'application/json', 'Authorization': `Bearer ${localStorage.getItem('recetas_flaites_token')}`}
-    });
-    datos.value = await respuesta.json();
+    try {
+        const respuesta = await apiClient.get(`/recetas-panel/${localStorage.getItem('recetas_flaites_id')}`);
+        datos.value = respuesta.data;
 
-    let respuesta2 =  await fetch(`${import.meta.env.VITE_API_URL}categorias`, {
-        headers:{'content-type':'application/json'}
-    });
-    categorias.value = await respuesta2.json();
-
+        const respuesta2 = await apiClient.get('/categorias');
+        categorias.value = respuesta2.data;
+    } catch (error) {
+        console.error('Error al cargar datos:', error);
+    }
 });
 //formulario
 let nombre = ref('');
@@ -61,7 +60,7 @@ let enviar=()=>
         formData.append('tiempo', tiempo.value);
         formData.append('descripcion', descripcion.value);
 
-        axios.post(`${import.meta.env.VITE_API_URL}recetas`, formData, {headers:{'Authorization': `Bearer ${localStorage.getItem('recetas_flaites_token')}`}})
+        apiClient.post('/recetas/', formData)
         .then((response)=>{
             alert("Se creó el registro exitosamente");
             window.location="/panel";
@@ -73,7 +72,7 @@ let enviar=()=>
     }
     if(modal_titulo.value=="Editar")
     {
-        axios.put(`${import.meta.env.VITE_API_URL}recetas/${recetas_id.value}`, {nombre:nombre.value, tiempo: tiempo.value, descripcion:descripcion.value, categoria_id: categoria_id.value}, {headers:{'Authorization': `Bearer ${localStorage.getItem('recetas_flaites_token')}`}})
+        apiClient.put(`/recetas/${recetas_id.value}/`, {nombre:nombre.value, tiempo: tiempo.value, descripcion:descripcion.value, categoria_id: categoria_id.value})
         .then((response)=>{
             alert("Se modificó el registro exitosamente");
             window.location="/panel";
@@ -107,7 +106,7 @@ const eliminar=(id)=>
 {
     if(window.confirm("¿Realmente desea eliminar este registro?"))
     {
-        axios.delete(`${import.meta.env.VITE_API_URL}recetas/${id}`, {headers:{'Authorization': `Bearer ${localStorage.getItem('recetas_flaites_token')}`}})
+        apiClient.delete(`/recetas/${id}/`)
         .then((response)=>{
             alert("Se eliminó el registro exitosamente");
             window.location="/panel";

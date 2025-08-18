@@ -4,6 +4,7 @@ import Header from '@/components/Header.vue';
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { Form } from 'vee-validate';
+import apiClient from '@/services/apiClient';
 
 
 let route = useRoute();
@@ -13,11 +14,15 @@ let preloader = ref('none');
 
 
 onMounted(async () => {
-    let respuesta = await fetch(import.meta.env.VITE_API_URL + 'recetas/' + route.params.id, { headers: { 'content-type': 'application/json' } });
-    if (respuesta.status != 200) {
-        window.location = "/error";
+    try {
+        const response = await apiClient.get(`/recetas/${route.params.id}/`);
+        datos.value = response.data;
+    } catch (error) {
+        if (error.response?.status === 404) {
+            window.location = "/error";
+        }
+        console.error('Error al cargar receta:', error);
     }
-    datos.value = await respuesta.json();
 });
 let enviar=async ()=>
 {
@@ -28,17 +33,9 @@ let enviar=async ()=>
     formData.append('foto', file);
     formData.append('id', route.params.id);
     try {
-        let resp = await fetch(`${import.meta.env.VITE_API_URL}recetas/editar/foto`,
-        {
-            method: 'POST',
-            body:formData,
-            headers:{'Authorization': `Bearer ${localStorage.getItem('recetas_flaites_token')}`}
-        })
-        if(resp.status==200)
-        {
-            alert("Se modificó el registro exitosamente");
-            window.location=`/panel/editar/${route.params.id}`;
-        }
+        const response = await apiClient.post('/recetas/editar/foto/', formData);
+        alert("Se modificó el registro exitosamente");
+        window.location=`/panel/editar/${route.params.id}`;
     } catch (err) {
         alert("Ocurrió un error inesperado");
         window.location="/panel/editar/"+route.params.id;
