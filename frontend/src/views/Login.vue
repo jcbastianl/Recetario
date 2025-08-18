@@ -12,10 +12,19 @@ let preloader = ref('none');
 let correo = ref('');
 let password = ref('');
 const { sendData } = loginComposable();
-let enviar = () => {
+
+let enviar = (values) => {
+    console.log('🔍 Valores del formulario (VeeValidate):', values);
+    console.log('🔍 Valores de refs:', { correo: correo.value, password: password.value });
+    
     boton.value = 'none';
     preloader.value = 'block';
-    sendData({ correo: correo.value, password: password.value });
+    
+    // Usar los valores validados por VeeValidate si están disponibles
+    const datosLogin = values || { correo: correo.value, password: password.value };
+    console.log('🔍 Datos finales para enviar:', datosLogin);
+    
+    sendData(datosLogin);
 };
 </script>
 
@@ -47,15 +56,13 @@ let enviar = () => {
             <div className="row">
                 <div className="col-8">
                     <div className="contact-form-area">
-                        <Form :validation-schema="loginSchema" @submit="enviar()">
+                        <Form :validation-schema="loginSchema" @submit="enviar">
 
                             <div class="row">
 
-
-
                                 <div class="col-12 col-lg-12">
                                     <ErrorMessage name="correo" class="text text-danger" />
-                                    <Field type="text" name="correo" v-model="correo" class="form-control"
+                                    <Field type="email" name="correo" v-model="correo" class="form-control"
                                         placeholder="E-Mail:" />
                                 </div>
 

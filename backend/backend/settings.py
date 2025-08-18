@@ -50,26 +50,45 @@ INSTALLED_APPS = [
     'seguridad'
 ]
 
+# backend/settings.py
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  # <-- MOVIDO HACIA ARRIBA
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "corsheaders.middleware.CorsMiddleware",
 ]
 
-CORS_ORIGIN_ALLOW_ALL = True
+# CORS settings for development and all environments
+CORS_ALLOW_ALL_ORIGINS = True  # Permite todos los orígenes (para desarrollo)
 CORS_ALLOW_CREDENTIALS = True
-CORS_ORIGIN_WHITELIST = [
-    'http://localhost:5173',
-    'http://127.0.0.1:5173',
-]  
-CORS_ORIGIN_REGEX_WHITELIST = [
-    'http://localhost:5173',
-    'http://127.0.0.1:5173',
+CORS_ALLOW_REDIRECTS = True  # Permite redirecciones con CORS
+
+# Headers permitidos
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+
+# Métodos HTTP permitidos
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
 ]
 
 
@@ -97,29 +116,77 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # Primary: MySQL/MariaDB (requires server up). Fallback: SQLite when USE_SQLITE=1
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
+
+# Railway/Production environment detection
+IS_RAILWAY = 'RAILWAY_ENVIRONMENT' in os.environ
+DATABASE_URL = os.getenv('DATABASE_URL')
 USE_SQLITE = os.getenv('USE_SQLITE', '0').lower() in ('1','true','yes','on')
 
-if USE_SQLITE:
+# Debug: Print environment variables
+print(f"🔍 Debug - IS_RAILWAY: {IS_RAILWAY}")
+print(f"🔍 Debug - DATABASE_URL present: {bool(DATABASE_URL)}")
+print(f"🔍 Debug - MYSQL_HOST: {os.getenv('MYSQL_HOST', 'NOT SET')}")
+print(f"🔍 Debug - MYSQL_USER: {os.getenv('MYSQL_USER', 'NOT SET')}")
+print(f"🔍 Debug - MYSQL_PASSWORD present: {bool(os.getenv('MYSQL_PASSWORD'))}")
+print(f"🔍 Debug - MYSQL_DATABASE: {os.getenv('MYSQL_DATABASE', 'NOT SET')}")
+
+if IS_RAILWAY and DATABASE_URL:
+    # Railway MySQL connection using DATABASE_URL
+    import dj_database_url
+    DATABASES = {
+        'default': dj_database_url.parse(DATABASE_URL)
+    }
+    print(f"🚂 Railway detected - Using DATABASE_URL")
+elif IS_RAILWAY:
+    # Railway with manual MySQL variables
+    mysql_password = os.getenv('MYSQL_PASSWORD')
+    if not mysql_password:
+        print("❌ ERROR: MYSQL_PASSWORD not found in environment!")
+    
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': os.getenv('MYSQL_DATABASE', 'railway'),
+            'USER': os.getenv('MYSQL_USER', 'root'),
+            'PASSWORD': mysql_password,
+            'HOST': os.getenv('MYSQL_HOST', 'mysql.railway.internal'),
+            'PORT': os.getenv('MYSQL_PORT', '3306'),
+            'OPTIONS': {
+                'autocommit': True,
+                'charset': 'utf8mb4',
+                'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            }
+        }
+    }
+    print(f"🚂 Railway detected - Using manual MySQL config")
+    print(f"   - Host: {os.getenv('MYSQL_HOST')}")
+    print(f"   - User: {os.getenv('MYSQL_USER')}")
+    print(f"   - Database: {os.getenv('MYSQL_DATABASE')}")
+elif USE_SQLITE:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
+    print("📁 Using SQLite database")
 else:
+    # Local development MySQL configuration
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'NAME': os.getenv('DATABASE_BD'),
-            'USER': os.getenv('DATABASE_USER'),
+            'NAME': os.getenv('DATABASE_BD', 'railway'),
+            'USER': os.getenv('DATABASE_USER', 'root'),
             'PASSWORD': os.getenv('DATABASE_PASSWORD'),
-            'HOST': os.getenv('DATABASE_SERVER'),
-            'PORT': os.getenv('DATABASE_PORT'),
+            'HOST': os.getenv('DATABASE_SERVER', 'localhost'),
+            'PORT': os.getenv('DATABASE_PORT', '3306'),
             'OPTIONS': {
-                'autocommit': True
+                'autocommit': True,
+                'charset': 'utf8mb4',
             }
         }
     }
+    print("🏠 Using local MySQL configuration")
 
 
 # Password validation
@@ -186,7 +253,6 @@ if IS_PRODUCTION:
     DEBUG = False
     ALLOWED_HOSTS = ["*"]  # Railway/Vercel handle the domain validation
     
-    
     # Static files configuration for production
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
     STATIC_URL = '/static/'
@@ -199,10 +265,12 @@ if IS_PRODUCTION:
     CORS_ALLOWED_ORIGINS = [
         "https://recetario-frontend.vercel.app",
         "https://recetario-app.vercel.app",
+        "https://recetario-vert.vercel.app",  # Tu frontend actual
         "https://tu-frontend.vercel.app",  # Cambiar por tu URL real
     ]
     
     CORS_ALLOW_CREDENTIALS = True
+    CORS_ALLOW_REDIRECTS = True  # Permite redirecciones con CORS
     
     # Security settings
     SECURE_BROWSER_XSS_FILTER = True
@@ -211,6 +279,11 @@ if IS_PRODUCTION:
     
     # Trust Railway/Vercel proxy headers
     USE_TZ = True
+    
+    # Railway specific settings
+    if 'RAILWAY_ENVIRONMENT' in os.environ:
+        print("🚂 Railway production environment detected")
+        # Additional Railway-specific configurations can go here
     
     # Logging configuration for production
     LOGGING = {
