@@ -240,6 +240,7 @@ USE_TZ = True
 STATIC_URL = '/assets/'
 ASSETS_DIR = BASE_DIR / 'assets'
 STATICFILES_DIRS = (str(ASSETS_DIR),) if ASSETS_DIR.exists() else ()
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_URL = '/uploads/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 # Default primary key field type
@@ -254,6 +255,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Railway/Vercel/Production Environment Detection
 IS_PRODUCTION = any([
     'RAILWAY_ENVIRONMENT' in os.environ,
+    'RENDER' in os.environ,
+    'RENDER_SERVICE_ID' in os.environ,
+    'RENDER_EXTERNAL_HOSTNAME' in os.environ,
     'VERCEL' in os.environ,
     'HEROKU' in os.environ,
     os.getenv('DJANGO_ENV') == 'production'
