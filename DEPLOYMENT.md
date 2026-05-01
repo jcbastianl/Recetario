@@ -79,8 +79,12 @@ if 'RAILWAY_ENVIRONMENT' in os.environ:
    DATABASE_URL=postgresql://...  (Auto-generada)
    SECRET_KEY=tu_clave_secreta_super_segura
    DEBUG=False
-   MAILTRAP_TOKEN=tu_token
-   MAILTRAP_INBOX_ID=tu_inbox_id
+  SMTP_SERVER=sandbox.smtp.mailtrap.io
+  SMTP_PORT=587
+  SMTP_USER=tu_user_mailtrap
+  SMTP_PASSWORD=tu_password_mailtrap
+  SMTP_FROM=noreply@recetario.com
+  CORS_ALLOWED_ORIGINS=https://tu-frontend.vercel.app
    ```
 
 ---
@@ -113,7 +117,7 @@ if 'RAILWAY_ENVIRONMENT' in os.environ:
 
 **Actualizar `frontend/.env.production`:**
 ```
-VITE_API_URL=https://tu-backend.up.railway.app/api
+VITE_API_URL=https://tu-backend.up.railway.app
 ```
 
 ### Pasos:

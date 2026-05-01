@@ -32,8 +32,12 @@ git push -u origin main
 6. ⚙️ Variables de entorno:
    SECRET_KEY=clave_super_secreta_aqui
    DEBUG=False
-   MAILTRAP_TOKEN=tu_token_mailtrap
-   MAILTRAP_INBOX_ID=tu_inbox_id
+   SMTP_SERVER=sandbox.smtp.mailtrap.io
+   SMTP_PORT=587
+   SMTP_USER=tu_user_mailtrap
+   SMTP_PASSWORD=tu_password_mailtrap
+   SMTP_FROM=noreply@recetario.com
+   CORS_ALLOWED_ORIGINS=https://tu-frontend.vercel.app
 ```
 
 #### 3️⃣ **Desplegar Frontend en Vercel** (2 minutos)
@@ -44,7 +48,7 @@ git push -u origin main
 4. 📁 Import: recetario-fullstack
 5. 📂 Root Directory: frontend
 6. ⚙️ Environment Variable:
-   VITE_API_URL=https://tu-backend.up.railway.app/api
+   VITE_API_URL=https://tu-backend.up.railway.app
 ```
 
 #### 4️⃣ **Actualizar CORS** (1 minuto)

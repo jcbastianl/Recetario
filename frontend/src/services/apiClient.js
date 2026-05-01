@@ -1,7 +1,14 @@
 import axios from 'axios';
 
+// Normalize base URL to avoid duplicate /api/v1 when env already includes it.
+const rawBaseUrl = import.meta.env.VITE_API_URL || '';
+const normalizedBaseUrl = rawBaseUrl
+  .replace(/\/+$/, '')
+  .replace(/\/api\/v1$/, '')
+  .replace(/\/api$/, '');
+
 const apiClient = axios.create({
-  baseURL: `${import.meta.env.VITE_API_URL}/api/v1/`,
+  baseURL: `${normalizedBaseUrl}/api/v1/`,
   // Removemos Content-Type fijo para que axios lo detecte automáticamente
   // según el tipo de datos (JSON, FormData, etc.)
 });

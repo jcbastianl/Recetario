@@ -16,6 +16,13 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
+def get_env_list(name, default=None):
+    value = os.getenv(name, '')
+    if value:
+        return [item.strip() for item in value.split(',') if item.strip()]
+    return default if default is not None else []
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -29,7 +36,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'dev-insecure-change-me')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'False').lower() in ('1','true','yes','on')
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = get_env_list('ALLOWED_HOSTS', ['*'])
 
 
 # Application definition
@@ -64,9 +71,14 @@ MIDDLEWARE = [
 ]
 
 # CORS settings for development and all environments
-CORS_ALLOW_ALL_ORIGINS = True  # Permite todos los orígenes (para desarrollo)
+CORS_ALLOW_ALL_ORIGINS = os.getenv('CORS_ALLOW_ALL', '0').lower() in ('1','true','yes','on')
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_ALLOWED_ORIGINS = get_env_list('CORS_ALLOWED_ORIGINS', [])
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_REDIRECTS = True  # Permite redirecciones con CORS
+CSRF_TRUSTED_ORIGINS = get_env_list('CSRF_TRUSTED_ORIGINS', [])
 
 # Headers permitidos
 CORS_ALLOW_HEADERS = [
@@ -226,10 +238,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = '/assets/'
-STATICFILES_DIRS =(
-    os.path.join(BASE_DIR, 'assets'),
-)
-MEDIA_URL='/uploads/'
+ASSETS_DIR = BASE_DIR / 'assets'
+STATICFILES_DIRS = (str(ASSETS_DIR),) if ASSETS_DIR.exists() else ()
+MEDIA_URL = '/uploads/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -251,7 +262,7 @@ IS_PRODUCTION = any([
 if IS_PRODUCTION:
     # Security settings for production
     DEBUG = False
-    ALLOWED_HOSTS = ["*"]  # Railway/Vercel handle the domain validation
+    ALLOWED_HOSTS = get_env_list('ALLOWED_HOSTS', ALLOWED_HOSTS)
     
     # Static files configuration for production
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
@@ -260,14 +271,6 @@ if IS_PRODUCTION:
     # WhiteNoise configuration for serving static files
     MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-    
-    # CORS configuration for production
-    CORS_ALLOWED_ORIGINS = [
-        "https://recetario-frontend.vercel.app",
-        "https://recetario-app.vercel.app",
-        "https://recetario-vert.vercel.app",  # Tu frontend actual
-        "https://tu-frontend.vercel.app",  # Cambiar por tu URL real
-    ]
     
     CORS_ALLOW_CREDENTIALS = True
     CORS_ALLOW_REDIRECTS = True  # Permite redirecciones con CORS
