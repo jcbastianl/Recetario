@@ -1,3 +1,38 @@
-# Render deployment configuration
-web: cd backend && gunicorn backend.wsgi:application --bind 0.0.0.0:$PORT
-release: cd backend && python manage.py migrate --no-input
+# Render Blueprint configuration
+services:
+	- type: web
+		name: recetario-backend
+		env: python
+		plan: free
+		rootDir: backend
+		buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate"
+		startCommand: "gunicorn backend.wsgi:application --bind 0.0.0.0:$PORT"
+		envVars:
+			- key: DEBUG
+				value: "False"
+			- key: SECRET_KEY
+				generateValue: true
+			- key: USE_SQLITE
+				value: "1"
+			- key: BASE_URL
+				value: "https://recetario-backend.onrender.com/"
+			- key: BASE_URL_FRONTEND
+				value: "https://recetario-frontend.vercel.app/"
+			- key: ALLOWED_HOSTS
+				value: "recetario-backend.onrender.com"
+			- key: CORS_ALLOWED_ORIGINS
+				value: "https://recetario-frontend.vercel.app"
+			- key: CORS_ALLOW_ALL
+				value: "0"
+			- key: CSRF_TRUSTED_ORIGINS
+				value: "https://recetario-frontend.vercel.app"
+			- key: SMTP_SERVER
+				value: "sandbox.smtp.mailtrap.io"
+			- key: SMTP_PORT
+				value: "587"
+			- key: SMTP_USER
+				value: "tu_user_mailtrap"
+			- key: SMTP_PASSWORD
+				value: "tu_password_mailtrap"
+			- key: SMTP_FROM
+				value: "noreply@recetario.com"
